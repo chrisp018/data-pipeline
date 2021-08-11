@@ -146,7 +146,7 @@ staging_events_copy = (
    )
    from {}
    iam_role {}
-   json {} region 'us-west-2';
+   json {} region 'ap-southest-1';
    """
 ).format(config['S3']['log_data'], config['IAM_ROLE']['arn'], config['S3']['log_jsonpath'])
 
@@ -155,7 +155,7 @@ staging_songs_copy = (
    copy staging_songs_table 
    from {}
    iam_role {}
-   json 'auto' region 'us-west-2';
+   json 'auto' region 'ap-southest-1';
    """
 ).format(config['S3']['song_data'], config['IAM_ROLE']['arn'])
 
