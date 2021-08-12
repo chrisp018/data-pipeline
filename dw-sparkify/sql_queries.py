@@ -135,6 +135,36 @@ time_table_create = (
    """
 )
 
+
+# Copy data from S3 to Redshift
+staging_event_copy = (
+   """
+      copy staging_events_table (
+         artist, auth, firstname, gender, itemInSession, lastname,
+         length, level, location, method, page, registration, 
+         sessionId, song, status, ts, userAgent, userId
+      )
+
+      from {}
+      iam_role {}
+      json {} region 'ap-southeast-1';
+   """
+).format(config['S3']['log_data'], config['IAM_ROLE']['arm'], config['S3']['log_jsonpath'])
+
+
+staging_songs_copy = (
+   """
+      copy song_stagings_table
+      from {}
+      iam_role {}
+      json 'auto' region 'ap-southeast-1'
+   """
+).format(config['S3']['song_data'], config['IAM_ROLE']['arm'])
+
+
+count_staging_rows = "SELECT COUNT(*) AS count FROM {}"
+
+
 # QUERY LISTS
 create_table_queries = [staging_events_table_create, staging_songs_table_create, 
                         user_table_create, song_table_create, artist_table_create,
@@ -143,3 +173,10 @@ create_table_queries = [staging_events_table_create, staging_songs_table_create,
 drop_table_queries = [staging_events_table_drop, staging_songs_table_drop,
                      songplay_table_drop, user_table_drop, song_table_drop,
                      artist_table_drop, time_table_drop]
+
+
+copy_table_queries = [staging_event_copy, staging_songs_copy]
+copy_staging_order = ['staging_events_table', 'staging_songs_table']
+
+count_staging_queries = [count_staging_rows.format(copy_staging_order[0]),
+                         count_staging_rows.format(copy_staging_order[1])]
