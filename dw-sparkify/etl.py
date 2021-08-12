@@ -11,6 +11,13 @@ def load_staging_tables(cur, conn):
         row = cur.execute(count_staging_queries[idx])
         print('No. of rows copied into {}: {}'.format(copy_staging_order[idx], row.count))
 
+def insert_tables(cur, conn):
+    for idx, query in enumerate(insert_table_queries):
+        cur.execute(query)
+        conn.commit()
+        row = cur.execute(count_fact_dim_queries[idx])
+        print('No. of rows inserted into {}: {}'.format(insert_table_order[idx], row.count))
+
 
 def main():
   config = configparser.ConfigParser()

@@ -163,6 +163,86 @@ staging_songs_copy = (
 
 
 # CREATE FINAL TABLE
+songplay_table_insert = (
+   """
+   INSERT INTO songplays (start_time, user_id, level, song_id, artist_id, 
+                          session_id, location, user_agent)
+   SELECT se.ts, se.userId, se.level, sa.song_id, sa.artist_id, se.sessionId, 
+          se.location, se.userAgent 
+   FROM staging_events_table se
+   JOIN (
+         SELECT s.song_id AS song_id, a.artist_id AS artist_id, s.title AS song, 
+         a.name AS artist, s.duration AS length 
+         FROM songs s
+         JOIN artists a ON s.artist_id=a.artist_id
+   ) sa 
+   ON se.song=sa.song AND se.artist=sa.artist AND se.length=sa.length; 
+   """
+)
+
+user_table_insert = (
+   """
+   INSERT INTO users (user_id, first_name, last_name, gender, level)
+   SELECT userId, firstName, lastName, gender, level
+   FROM (
+         SELECT userId, firstName, lastName, gender, level,
+         ROW_NUMBER() OVER (PARTITION BY userId
+                            ORDER BY firstName, lastName,
+                            gender, level) AS user_id_ranked
+         FROM staging_events_table
+         WHERE userId IS NOT NULL
+   ) AS ranked
+   WHERE ranked.user_id_ranked = 1;
+   """
+)
+
+song_table_insert = (
+   """
+   INSERT INTO songs (song_id, title, artist_id, year, duration)
+   SELECT song_id, title, artist_id, year, duration
+   FROM (
+         SELECT song_id, title, artist_id, year, duration,
+         ROW_NUMBER() OVER (PARTITION BY song_id
+                            ORDER BY title, artist_id,
+                            year, duration) AS song_id_ranked
+         FROM staging_songs_table
+         WHERE song_id IS NOT NULL
+   ) AS ranked
+   WHERE ranked.song_id_ranked = 1;
+   """
+)
+
+artist_table_insert = (
+   """
+   INSERT INTO artists (artist_id, name, location, latitude, longitude)
+   SELECT artist_id, artist_name, artist_location, artist_latitude, artist_longitude
+   FROM (
+         SELECT artist_id, artist_name, artist_location, artist_latitude, artist_longitude,
+         ROW_NUMBER() OVER (PARTITION BY artist_id
+                            ORDER BY artist_name, artist_location,
+                            artist_latitude, artist_longitude) AS artist_id_ranked
+         FROM staging_songs_table
+         WHERE artist_id IS NOT NULL
+   ) AS ranked
+   WHERE ranked.artist_id_ranked = 1;
+   """
+)
+
+
+time_table_insert = (
+   """
+   INSERT INTO time (start_time, hour, day, week, month, year, weekday)
+   SELECT TIMESTAMP 'epoch' + ts/1000 * interval '1 second' AS start_time,
+         EXTRACT(HOUR FROM start_time) AS hour,
+         EXTRACT(DAY FROM start_time) AS day,
+         EXTRACT(WEEK FROM start_time) AS week,
+         EXTRACT(MONTH FROM start_time) AS month,
+         EXTRACT(YEAR FROM start_time) AS year,
+         EXTRACT(DOW FROM start_time) AS weekday
+   FROM staging_events_table
+   WHERE ts IS NOT NULL;
+   """
+)
 
 count_staging_rows = "SELECT COUNT(*) AS count FROM {}"
 
@@ -182,3 +262,15 @@ copy_staging_order = ['staging_events_table', 'staging_songs_table']
 
 count_staging_queries = [count_staging_rows.format(copy_staging_order[0]),
                          count_staging_rows.format(copy_staging_order[1])]
+
+insert_table_queries = [user_table_insert, song_table_insert, artist_table_insert,
+                        time_table_insert, songplay_table_insert]
+
+insert_table_order = ['users', 'songs', 'artists', 'time', 'songplays']
+
+
+count_fact_dim_queries = [count_staging_rows.format(insert_table_order[0]),
+                          count_staging_rows.format(insert_table_order[1]),
+                          count_staging_rows.format(insert_table_order[2]),
+                          count_staging_rows.format(insert_table_order[3]),
+                          count_staging_rows.format(insert_table_order[4])]
