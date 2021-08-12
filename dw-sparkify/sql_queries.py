@@ -149,7 +149,7 @@ staging_event_copy = (
       iam_role {}
       json {} region 'ap-southeast-1';
    """
-).format(config['S3']['log_data'], config['IAM_ROLE']['arm'], config['S3']['log_jsonpath'])
+).format(config['S3']['log_data'], config['IAM_ROLE']['arn'], config['S3']['log_jsonpath'])
 
 
 staging_songs_copy = (
