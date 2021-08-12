@@ -162,6 +162,8 @@ staging_songs_copy = (
 ).format(config['S3']['song_data'], config['IAM_ROLE']['arm'])
 
 
+# CREATE FINAL TABLE
+
 count_staging_rows = "SELECT COUNT(*) AS count FROM {}"
 
 
