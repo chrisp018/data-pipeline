@@ -7,12 +7,14 @@ def drop_tables(cur, conn):
     for query in drop_table_queries:
         cur.execute(query)
         conn.commit()
+        print('Drop table: {} completed'.format(query))
 
 
 def create_tables(cur, conn):
     for query in create_table_queries:
         cur.execute(query)
         conn.commit()
+        print('Create table: {} completed'.format(query))
 
 
 def main():
