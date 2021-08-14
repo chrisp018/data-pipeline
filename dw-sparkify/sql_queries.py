@@ -159,7 +159,7 @@ staging_songs_copy = (
       iam_role {}
       json 'auto' region 'ap-southeast-1'
    """
-).format(config['S3']['song_data'], config['IAM_ROLE']['arm'])
+).format(config['S3']['song_data'], config['IAM_ROLE']['arn'])
 
 
 # CREATE FINAL TABLE

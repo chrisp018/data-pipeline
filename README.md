@@ -1,6 +1,16 @@
 # data-engineer: Building a Data Warehouse using AWS Redshift
-Source data is from AWS S3, the data will be moved to AWS Redshift by using python script.
-After data is loaded into the Redshift DW, we can use Quicksight for Business analysist.
+## Project structure
+### Project contains seven files:
+* blob/data-pipeline-architecture.drawio: an diagram illustrates how data is loaded from Sparkify souce to Redshift datawarehouse followed by an visualization tool supporting for visual data
+* create_tables.py: drop tables in Amazon Redshift in case it already exist and create tables. The scipts will be run before each time running ETL scripts for loading data to Redshift.
+* sql_queries.py: contains all the query command, data is loaded to Redshift from S3
+* README.md provide information about project and step instructions how to run it
+
+## Run The Project
+Synchonize data:
+* Synchonize data from Sparkify to Data Lake (S3) using AWS cli s3 sync command
+Create Tables in Redshift:
+* Run the create_tables
 
 ## Scripts - Draft
 Create a connection to Redshift Datawarehouse
