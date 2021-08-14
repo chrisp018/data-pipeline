@@ -1,5 +1,6 @@
 import configparser
 import psycopg2
+import re
 from sql_queries import create_table_queries, drop_table_queries
 
 
@@ -7,14 +8,16 @@ def drop_tables(cur, conn):
     for query in drop_table_queries:
         cur.execute(query)
         conn.commit()
-        print('Drop table: {} completed'.format(query))
+        x = re.search("^[^(]*", query)
+        print('Drop table: {} completed'.format(x))
 
 
 def create_tables(cur, conn):
     for query in create_table_queries:
         cur.execute(query)
         conn.commit()
-        print('Create table: {} completed'.format(query))
+        x = re.search("^[^(]*", query)
+        print('Create table: {} completed'.format(x))
 
 
 def main():
