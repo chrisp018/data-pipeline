@@ -8,33 +8,27 @@ def load_staging_tables(cur, conn):
     for idx, query in enumerate (copy_table_queries):
         cur.execute(query)
         conn.commit()
-        row = cur.execute(count_staging_queries[idx])
-        # print('No. of rows copied into {}: {}'.format(copy_staging_order[idx], row.count))
-        #print("Loading data to staging finished")
 
 def insert_tables(cur, conn):
     for idx, query in enumerate(insert_table_queries):
         cur.execute(query)
         conn.commit()
-        row = cur.execute(count_fact_dim_queries[idx])
-        # print('No. of rows inserted into {}: {}'.format(insert_table_order[idx], row.count))
-        #print("Insert data to table finished")
 
 
 def main():
-  config = configparser.ConfigParser()
-  config.read('dwh.cfg')
+    config = configparser.ConfigParser()
+    config.read('dwh.cfg')
 
 
-  conn = psycopg2.connect("host={} dbname={} user={} password={} port={}".format(*config['CLUSTER'].values()))
-  cur = conn.cursor()
+    conn = psycopg2.connect("host={} dbname={} user={} password={} port={}".format(*config['CLUSTER'].values()))
+    cur = conn.cursor()
 
 
-  load_staging_tables(cur, conn)
-  insert_tables(cur, conn)
+    load_staging_tables(cur, conn)
+    insert_tables(cur, conn)
+    print("Load data successfully")
 
-
-  conn.close()
+    conn.close()
 
 if __name__ == "__main__":
     main()
