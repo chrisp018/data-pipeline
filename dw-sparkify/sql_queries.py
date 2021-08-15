@@ -154,7 +154,7 @@ staging_event_copy = (
 
 staging_songs_copy = (
    """
-      copy song_stagings_table
+      copy staging_songs_table
       from {}
       iam_role {}
       json 'auto' region 'ap-southeast-1'

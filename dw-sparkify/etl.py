@@ -10,7 +10,7 @@ def load_staging_tables(cur, conn):
         conn.commit()
         row = cur.execute(count_staging_queries[idx])
         # print('No. of rows copied into {}: {}'.format(copy_staging_order[idx], row.count))
-        print("Loading data to staging finished")
+        #print("Loading data to staging finished")
 
 def insert_tables(cur, conn):
     for idx, query in enumerate(insert_table_queries):
@@ -18,7 +18,7 @@ def insert_tables(cur, conn):
         conn.commit()
         row = cur.execute(count_fact_dim_queries[idx])
         # print('No. of rows inserted into {}: {}'.format(insert_table_order[idx], row.count))
-        print("Insert data to table finished")
+        #print("Insert data to table finished")
 
 
 def main():
@@ -31,6 +31,7 @@ def main():
 
 
   load_staging_tables(cur, conn)
+  insert_tables(cur, conn)
 
 
   conn.close()
