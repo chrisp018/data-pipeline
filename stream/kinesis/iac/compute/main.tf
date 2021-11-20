@@ -56,6 +56,16 @@ resource "aws_instance" "bigdata_stream_node" {
       private_key = file(var.private_key_path)
     }
   }
+  provisioner "file" {
+    source      = var.stream_data_source
+    destination = "/home/ec2-user/amazon-kinesis-replay.jar"
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      host        = self.public_ip
+      private_key = file(var.private_key_path)
+    }
+  }
 }
 
 resource "aws_iam_instance_profile" "instance_profile" {

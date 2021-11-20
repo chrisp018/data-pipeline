@@ -1,6 +1,7 @@
 locals {
-  vpc_cidr     = "10.0.0.0/16"
-  project_name = var.project_name
+  vpc_cidr              = "10.0.0.0/16"
+  project_name          = var.project_name
+  stream_s3_source_name = "bigdata-stream-data-analytics-source"
 }
 
 locals {
@@ -44,6 +45,22 @@ locals {
         ]
       })
     }
+    kinesis_analytic_role = {
+      name        = "${local.project_name}-kinesis_analytic_role"
+      policy_name = ["kinesis_analytic_policy"]
+      assume_role_policy = jsonencode({
+        Statement = [
+          {
+            Action = "sts:AssumeRole"
+            Effect = "Allow"
+            Sid    = ""
+            Principal = {
+              Service = "kinesisanalytics.amazonaws.com"
+            }
+          },
+        ]
+      })
+    }
   }
 }
 
@@ -81,6 +98,28 @@ locals {
           {
             Action = [
               "kinesis:*"
+            ]
+            Effect   = "Allow"
+            Resource = "*"
+          }
+        ]
+      })
+    }
+    kinesis_analytic_policy = {
+      name = "${local.project_name}-kinesis_analytic_policy"
+      policy = jsonencode({
+        Version = "2012-10-17"
+        Statement = [
+          {
+            Action = [
+              "kinesis:*",
+              "kinesisanalytics:*",
+              "s3:*",
+              "cloudwatch:*",
+              "logs:*",
+              "iam:GetPolicy",
+              "iam:GetPolicyVersion",
+              "iam:GetRole"
             ]
             Effect   = "Allow"
             Resource = "*"

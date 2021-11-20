@@ -1,0 +1,1 @@
+# --- kinesis-analytics/outputs.tf ---
