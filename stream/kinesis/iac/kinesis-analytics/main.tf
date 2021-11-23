@@ -39,7 +39,7 @@ resource "aws_kinesisanalyticsv2_application" "kinesis_analytic" {
         metrics_level      = "TASK"
       }
       parallelism_configuration {
-        auto_scaling_enabled = false
+        auto_scaling_enabled = true
         configuration_type   = "DEFAULT"
         parallelism          = 1
         parallelism_per_kpu  = 1
