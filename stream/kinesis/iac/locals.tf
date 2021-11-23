@@ -119,7 +119,8 @@ locals {
               "logs:*",
               "iam:GetPolicy",
               "iam:GetPolicyVersion",
-              "iam:GetRole"
+              "iam:GetRole",
+              "es:*"
             ]
             Effect   = "Allow"
             Resource = "*"

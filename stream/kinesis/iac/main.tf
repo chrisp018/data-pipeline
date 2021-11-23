@@ -36,8 +36,8 @@ module "security" {
 
 module "visualize" {
   source                      = "./visualize"
-  elasticsearch_name          = "bigdata-visualize-stream"
-  elasticsearch_version       = "7.10"
+  elasticsearch_name          = "bigdata-visualize-data"
+  elasticsearch_version       = "7.1"
   elasticsearch_instance_type = "t3.medium.elasticsearch"
   elasticsearch_ebs_size      = 10
 }
