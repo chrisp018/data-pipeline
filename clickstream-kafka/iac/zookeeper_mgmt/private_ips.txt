@@ -1,0 +1,9 @@
+10.0.4.252 zookeeper2
+10.0.2.175 zookeeper1
+10.0.2.100 zookeeper_monitoring1
+10.0.4.9 zookeeper2
+10.0.2.233 zookeeper_mntr1
+10.0.2.85 zookeeper1
+10.0.2.160 zookeeper_mntr1
+10.0.2.174 zookeeper1
+10.0.4.209 zookeeper2
