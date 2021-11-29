@@ -41,6 +41,10 @@ resource "aws_instance" "bigdata_stream_node" {
     volume_size = var.vol_size
   }
 
+  provisioner "local-exec" {
+    command = "sed 's/<broker_id>/${count.index + 1}/g' ${path.root}/mgmt/kafka_config/server_default.properties > ${path.root}/mgmt/kafka_config/server.properties"
+  }
+
   provisioner "file" {
     source      = var.provisioner_file_source
     destination = var.provisioner_file_dest
@@ -57,7 +61,7 @@ resource "aws_instance" "bigdata_stream_node" {
   # }
 
   provisioner "local-exec" {
-    command = "echo ${self.private_ip} ${var.local_exec_var}${count.index + 1} >> ${path.root}/zookeeper_mgmt/private_ips.txt"
+    command = "echo ${self.private_ip} ${var.local_exec_var}${count.index + 1} >> ${path.root}/mgmt/private_ips.txt"
   }
 }
 

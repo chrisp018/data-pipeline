@@ -1,0 +1,11 @@
+version: '2.2'
+services:
+        kafka_manager:
+                image: hlebalbau/kafka-manager:stable
+                ports:
+                        - "9000:9000"
+                environment:
+                        ZK_HOSTS: "zookeeper1:2181,zookeeper2:2181,zookeeper3:2181"
+                        APPLICATION_SECRET: "random_secret"
+                network_mode: host
+                restart: always

@@ -1,0 +1,10 @@
+10.0.2.134 kafka1
+10.0.4.155 zookeeper2
+10.0.2.99 zookeeper1
+10.0.2.156 zookeeper_mntr1
+10.0.6.7 zookeeper3
+10.0.2.67 zookeeper_mntr1
+10.0.2.89 kafka1
+10.0.6.51 zookeeper3
+10.0.4.247 zookeeper2
+10.0.2.227 zookeeper1
