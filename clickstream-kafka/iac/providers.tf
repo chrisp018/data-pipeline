@@ -11,5 +11,7 @@ terraform {
 
 provider "aws" {
   # Configuration options
-  region = var.aws_region
+  region                  = "ap-southeast-1" #var.aws_region
+  shared_credentials_file = "/Users/khpn/.aws/credentials"
+  profile                 = "clphan259-terraform"
 }

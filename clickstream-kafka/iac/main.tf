@@ -1,9 +1,9 @@
 # --- root/main.tf ---
 
-resource "aws_key_pair" "bigdata_stream_auth" {
-  key_name   = "bigdata_stream"
-  public_key = file("${var.home_path}.ssh/bigdata_stream.pub")
-}
+# resource "aws_key_pair" "bigdata_stream_auth" {
+#   key_name   = "bigdata_stream"
+#   public_key = file("${var.home_path}.ssh/ths_bigdata_stream.pub")
+# }
 
 module "networking" {
   source           = "./networking"
@@ -16,65 +16,65 @@ module "networking" {
   security_groups  = local.security_groups
 }
 
-module "zookeeper" {
-  source                  = "./compute"
-  resource_group_name     = "zkp"
-  public_sg               = module.networking.public_sg
-  public_subnets          = module.networking.public_subnets
-  profile_name            = "${local.iam_role.instance_role.name}_profile"
-  instance_role_name      = local.iam_role.instance_role.name
-  instance_count          = 3
-  instance_type           = "t2.micro"
-  vol_size                = "10"
-  public_key_path         = "${var.home_path}.ssh/bigdata_stream.pub"
-  private_key_path        = "${var.home_path}.ssh/bigdata_stream"
-  key_name                = aws_key_pair.bigdata_stream_auth.id
-  user_data_path          = "${path.root}/mgmt/zkp_config/zkp_install.tpl"
-  provisioner_file_source = "${path.root}/mgmt/zkp_config"
-  provisioner_file_dest   = "/home/ubuntu/mgmt"
-  # remote_exec = {}
-  local_exec_var = "zookeeper"
-}
+# module "zookeeper" {
+#   source                  = "./compute"
+#   resource_group_name     = "zkp"
+#   public_sg               = module.networking.public_sg
+#   public_subnets          = module.networking.public_subnets
+#   profile_name            = "${local.iam_role.instance_role.name}_profile"
+#   instance_role_name      = local.iam_role.instance_role.name
+#   instance_count          = 3
+#   instance_type           = "t2.micro"
+#   vol_size                = "10"
+#   public_key_path         = "${var.home_path}.ssh/bigdata_stream.pub"
+#   private_key_path        = "${var.home_path}.ssh/bigdata_stream"
+#   key_name                = aws_key_pair.bigdata_stream_auth.id
+#   user_data_path          = "${path.root}/mgmt/zkp_config/zkp_install.tpl"
+#   provisioner_file_source = "${path.root}/mgmt/zkp_config"
+#   provisioner_file_dest   = "/home/ubuntu/mgmt"
+#   # remote_exec = {}
+#   local_exec_var = "zookeeper"
+# }
 
-module "zkp_kafka_monitoring" {
-  source                  = "./compute"
-  resource_group_name     = "zkp_kafka_mntr"
-  public_sg               = module.networking.public_sg
-  public_subnets          = module.networking.public_subnets
-  profile_name            = "${local.iam_role.instance_role.name}_profile_zkp_kafka_mntr"
-  instance_role_name      = local.iam_role.instance_role.name
-  instance_count          = 1
-  instance_type           = "t3.medium"
-  vol_size                = "10"
-  public_key_path         = "${var.home_path}.ssh/bigdata_stream.pub"
-  private_key_path        = "${var.home_path}.ssh/bigdata_stream"
-  key_name                = "bigdata_stream"
-  user_data_path          = "${path.root}/mgmt/mntr_config/tools.tpl"
-  provisioner_file_source = "${path.root}/mgmt/mntr_config"
-  provisioner_file_dest   = "/home/ubuntu/mgmt"
-  local_exec_var          = "zookeeper_mntr"
-  # remote_exec = {}
-}
+# module "zkp_kafka_monitoring" {
+#   source                  = "./compute"
+#   resource_group_name     = "zkp_kafka_mntr"
+#   public_sg               = module.networking.public_sg
+#   public_subnets          = module.networking.public_subnets
+#   profile_name            = "${local.iam_role.instance_role.name}_profile_zkp_kafka_mntr"
+#   instance_role_name      = local.iam_role.instance_role.name
+#   instance_count          = 1
+#   instance_type           = "t3.medium"
+#   vol_size                = "10"
+#   public_key_path         = "${var.home_path}.ssh/bigdata_stream.pub"
+#   private_key_path        = "${var.home_path}.ssh/bigdata_stream"
+#   key_name                = "bigdata_stream"
+#   user_data_path          = "${path.root}/mgmt/mntr_config/tools.tpl"
+#   provisioner_file_source = "${path.root}/mgmt/mntr_config"
+#   provisioner_file_dest   = "/home/ubuntu/mgmt"
+#   local_exec_var          = "zookeeper_mntr"
+#   # remote_exec = {}
+# }
 
-module "kafka" {
-  source                  = "./compute"
-  resource_group_name     = "kafka"
-  public_sg               = module.networking.public_sg
-  public_subnets          = module.networking.public_subnets
-  profile_name            = "${local.iam_role.instance_role.name}_profile_kafka"
-  instance_role_name      = local.iam_role.instance_role.name
-  instance_count          = 1
-  instance_type           = "t3.medium"
-  vol_size                = "10"
-  public_key_path         = "${var.home_path}.ssh/bigdata_stream.pub"
-  private_key_path        = "${var.home_path}.ssh/bigdata_stream"
-  key_name                = "bigdata_stream"
-  user_data_path          = "${path.root}/mgmt/kafka_config/kafka_install.tpl"
-  provisioner_file_source = "${path.root}/mgmt/kafka_config"
-  provisioner_file_dest   = "/home/ubuntu/mgmt"
-  local_exec_var          = "kafka"
-  # remote_exec = {}
-}
+# module "kafka" {
+#   source                  = "./compute"
+#   resource_group_name     = "kafka"
+#   public_sg               = module.networking.public_sg
+#   public_subnets          = module.networking.public_subnets
+#   profile_name            = "${local.iam_role.instance_role.name}_profile_kafka"
+#   instance_role_name      = local.iam_role.instance_role.name
+#   instance_count          = 1
+#   instance_type           = "t3.medium"
+#   vol_size                = "10"
+#   public_key_path         = "${var.home_path}.ssh/bigdata_stream.pub"
+#   private_key_path        = "${var.home_path}.ssh/bigdata_stream"
+#   key_name                = "bigdata_stream"
+#   user_data_path          = "${path.root}/mgmt/kafka_config/kafka_install.tpl"
+#   provisioner_file_source = "${path.root}/mgmt/kafka_config"
+#   provisioner_file_dest   = "/home/ubuntu/mgmt"
+#   local_exec_var          = "kafka"
+#   # remote_exec = {}
+# }
 
 module "security" {
   source     = "./security"
