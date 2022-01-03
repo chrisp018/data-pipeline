@@ -4,6 +4,7 @@ services:
   # https://github.com/confluentinc/schema-registry
   confluent-schema-registry:
     image: confluentinc/cp-schema-registry:3.2.1
+    # hostname: confluent-schema-registry
     network_mode: host
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181/kafka
@@ -17,7 +18,8 @@ services:
     image: confluentinc/cp-kafka-rest:3.2.1
     network_mode: host
     environment:
-      KAFKA_REST_BOOTSTRAP_SERVERS: kafka1:9092 #,kafka2:9092,kafka3:9092
+      #kafka2:9092,kafka3:9092
+      KAFKA_REST_BOOTSTRAP_SERVERS: kafka1:9092
       KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper1:2181,zookeeper2:2181,zookeeper3:2181/kafka
       KAFKA_REST_LISTENERS: http://0.0.0.0:8082/
       KAFKA_REST_SCHEMA_REGISTRY_URL: http://localhost:8081/
@@ -26,7 +28,65 @@ services:
     depends_on:
       - confluent-schema-registry
     restart: always
-
+  # https://docs.ksqldb.io/en/latest/operate-and-deploy/installation/install-ksqldb-with-docker/
+  ksqldb-server:
+    image: confluentinc/ksqldb-server:0.23.1
+    hostname: ksqldb-server
+    container_name: ksqldb-server
+    depends_on:
+      - confluent-schema-registry
+    ports:
+      - "8088:8088"
+    # volumes:
+      # - "./extensions/:/opt/ksqldb-udfs"
+    environment:
+      KSQL_LISTENERS: "http://0.0.0.0:8088"
+      KSQL_BOOTSTRAP_SERVERS: "broker1:9092"
+      KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://0.0.0.0::8081"
+      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
+      # Configuration for UDFs
+      # KSQL_KSQL_EXTENSION_DIR: "/opt/ksqldb-udfs"
+  # Access the cli by running:
+  # > docker-compose -f <file-file> exec kafka-ksql-cli  ksql http://primary-ksqldb-server:8088
+  ksqldb-cli:
+    image: confluentinc/ksqldb-cli
+    hostname: ksqldb-cli
+    container_name: ksqldb-cli
+    depends_on:
+      - ksqldb-server
+    environment:
+      KSQL: http://ksqldb-server:8088
+    entrypoint: /bin/sh
+    tty: true
+  # https://github.com/TribalScale/kafka-waffle-stack/blob/master/docker-compose.yml
+  kafka-connect:
+    image: confluentinc/cp-kafka-connect
+    hostname: kafka-connect
+    container_name: kafka-connect
+    ports:
+      - "8083:8083"
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: "kafka1:9092"
+    #   # Required. A unique string that identifies the Connect cluster group this worker belongs to.
+    #   CONNECT_GROUP_ID: stream-connect-group
+    depends_on:
+      - confluent-schema-registry
+    
+  kafka-connect-ui:
+    image: landoop/kafka-connect-ui
+    hostname: kafka-connect-ui
+    container_name: kafka-connect-ui
+    # kafka-connect-ui binds to port 8000, but we are going to expose it on our local
+    # machine on port 8002.
+    ports:
+      - "8002:8000"
+    depends_on:
+      - kafka-connect
+    environment:
+      CONNECT_URL: http://kafka-connect:8083
+      # This instructs the docker image to use Caddy to proxy traffic to kafka-connect-ui.
+      PROXY: "true"
   # https://github.com/Landoop/kafka-topics-ui
   kafka-topics-ui:
     image: landoop/kafka-topics-ui:0.9.2
@@ -37,3 +97,4 @@ services:
     depends_on:
       - confluent-rest-proxy
     restart: always
+  

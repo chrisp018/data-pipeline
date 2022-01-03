@@ -63,6 +63,16 @@ resource "aws_instance" "bigdata_stream_node" {
   provisioner "local-exec" {
     command = "echo ${self.private_ip} ${var.local_exec_var}${count.index + 1} >> ${path.root}/mgmt/private_ips.txt"
   }
+  
+  provisioner "remote-exec" {
+    inline = ["sudo hostnamectl set-hostname bigdata-stream-node-${var.resource_group_name}-${random_id.bigdata_stream_node_id[count.index].dec}"]
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      host        = self.public_ip
+      private_key = file(var.private_key_path)
+    }
+  }
 }
 
 resource "aws_iam_instance_profile" "instance_profile" {

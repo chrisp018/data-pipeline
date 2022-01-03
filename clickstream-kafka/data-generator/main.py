@@ -4,7 +4,7 @@ import time
 import json
 from kafka import KafkaProducer
 
-BROKER_HOSTNAME = 'localhost'
+BROKER_HOSTNAME = 'kafka1'
 BROKER_PORT = '9092'
 def getReferrer():
     x = random.randint(1,5)
@@ -27,7 +27,7 @@ def main():
         strdata = json.dumps(jsdata)
         producer = KafkaProducer(bootstrap_servers='{}:{}'.format(BROKER_HOSTNAME, BROKER_PORT))
         # rs = producer.send('USERS', key=jsdata.get("Name").encode('utf-8'), value=strdata.encode('utf-8'))
-        rs = producer.send('SOURCE_SQL_STREAM_001', value=strdata.encode('utf-8'))
+        rs = producer.send('SOURCE_SQL_TOPIC_001', value=strdata.encode('utf-8'))
         rs = rs.get(timeout=60)
         print("data: {}".format(jsdata))
         # print("result: {}".format(rs))
