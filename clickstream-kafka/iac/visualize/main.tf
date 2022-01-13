@@ -30,7 +30,7 @@ resource "aws_elasticsearch_domain_policy" "elk_stream_policy" {
             "Principal": "*",
             "Effect": "Allow",
             "Condition": {
-                "IpAddress": {"aws:SourceIp": "27.75.135.143/32"}
+                "IpAddress": {"aws:SourceIp": ["27.75.239.43/32", "10.0.0.0/16"]}
             },
             "Resource": "${aws_elasticsearch_domain.elk_stream.arn}/*"
         }

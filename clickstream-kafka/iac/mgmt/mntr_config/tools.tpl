@@ -30,6 +30,10 @@ tar -xvzf kafka_*.tgz
 rm kafka_*.tgz
 mv kafka_* kafka
 
+# install python3 & kafka
+sudo apt install python3-pip
+pip3 install kafka
+
 # Add Docker’s official GPG key:
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 

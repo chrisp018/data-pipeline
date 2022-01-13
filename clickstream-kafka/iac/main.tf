@@ -44,8 +44,8 @@ module "zkp_kafka_monitoring" {
   profile_name            = "${local.iam_role.instance_role.name}_profile_zkp_kafka_mntr"
   instance_role_name      = local.iam_role.instance_role.name
   instance_count          = 1
-  instance_type           = "t3.medium"
-  vol_size                = "10"
+  instance_type           = "t3.large"
+  vol_size                = "15"
   public_key_path         = "${var.home_path}.ssh/ths_bigdata_stream.pub"
   private_key_path        = "${var.home_path}.ssh/ths_bigdata_stream"
   key_name                = "ths_bigdata_stream"
@@ -63,7 +63,7 @@ module "kafka" {
   public_subnets          = module.networking.public_subnets
   profile_name            = "${local.iam_role.instance_role.name}_profile_kafka"
   instance_role_name      = local.iam_role.instance_role.name
-  instance_count          = 1
+  instance_count          = 3
   instance_type           = "t3.medium"
   vol_size                = "10"
   public_key_path         = "${var.home_path}.ssh/ths_bigdata_stream.pub"
@@ -76,39 +76,19 @@ module "kafka" {
   # remote_exec = {}
 }
 
-# module "ksql" {
-#   source                  = "./compute"
-#   resource_group_name     = "ksql"
-#   public_sg               = module.networking.public_sg
-#   public_subnets          = module.networking.public_subnets
-#   profile_name            = "${local.iam_role.instance_role.name}_ksql"
-#   instance_role_name      = local.iam_role.instance_role.name
-#   instance_count          = 1
-#   instance_type           = "t3.medium"
-#   vol_size                = "10"
-#   public_key_path         = "${var.home_path}.ssh/ths_bigdata_stream.pub"
-#   private_key_path        = "${var.home_path}.ssh/ths_bigdata_stream"
-#   key_name                = "ths_bigdata_stream"
-#   user_data_path          = "${path.root}/mgmt/mntr_config/tools.tpl"
-#   provisioner_file_source = "${path.root}/mgmt/mntr_config"
-#   provisioner_file_dest   = "/home/ubuntu/mgmt"
-#   local_exec_var          = "zookeeper_mntr"
-#   # remote_exec = {}
-# }
-
 module "security" {
   source     = "./security"
   iam_role   = local.iam_role
   iam_policy = local.iam_policy
 }
 
-# module "visualize" {
-#   source                      = "./visualize"
-#   elasticsearch_name          = "bigdata-visualize-data"
-#   elasticsearch_version       = "7.1"
-#   elasticsearch_instance_type = "t3.medium.elasticsearch"
-#   elasticsearch_ebs_size      = 10
-# }
+module "visualize" {
+  source                      = "./visualize"
+  elasticsearch_name          = "bigdata-visualize-data"
+  elasticsearch_version       = "7.1"
+  elasticsearch_instance_type = "t3.medium.elasticsearch"
+  elasticsearch_ebs_size      = 10
+}
 
 # module "stream_s3_source" {
 #   source      = "./storage"
