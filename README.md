@@ -27,7 +27,7 @@ Create a connection to Redshift Datawarehouse
   conn.close()
 ```
 
-Connect to Redshift using psql
+Connect to Redshift using psql, the example below uses dummy credential
 ```psql -h ktdl-redshift-cluster-1.cfl4l9luhdaw.ap-southeast-1.redshift.amazonaws.com -U clphan -d dev -p 5439
 ```
 
