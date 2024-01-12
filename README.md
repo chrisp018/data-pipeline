@@ -1,4 +1,4 @@
-# data-engineer: Building a Data Warehouse using AWS Redshift
+# Building a Data Warehouse using AWS Redshift
 ## Project structure
 ### Project contains seven files:
 * blob/data-pipeline-architecture.drawio: an diagram illustrates how data is loaded from Sparkify souce to Redshift datawarehouse followed by an visualization tool supporting for visual data
